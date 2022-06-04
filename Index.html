@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExamenTecnico</title>
+    <link rel="stylesheet" href="./bootstrap-5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./scripts/jquery-3.6.0.js"></script>
+    <script src="./scripts/vue.js"></script>
+    <script src="./scripts/popper.min.js"></script>
+    <script src="./bootstrap-5/js/bootstrap.min.js"></script>
+    <script src="./scripts/sweetalert2.all.min.js"></script>
+    <script src="./scripts/main.js"></script>
+    <script>
+        $(document).ready(async () => {
+            await init()
+        })
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-envia">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="./Index.html">
+                <h3>ParaPaquetes.com</h3>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="./Index.html">Inicio</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="page" class="container" style="display: none">
+        <div class="row my-3" v-if="paginaActual == 'Listado'">
+            <div class="col-md-12">
+                <div class="tituloPage col-md-12 mb-3">
+                    <h2>Listado de ordenes de compra</h2>
+                </div>
+                <div class="ps-2 pe-2 mb-2 fw-bold fs-5">
+                    <span class="cl-1">Total de ordenes: </span>
+                    <span class="cl-2">{{numOrdenes}}</span></div>
+                <div id="tablaListado" class="ps-2 pe-2">
+                    <table class="table table-striped table-bordered border-primary table-responsive">
+                        <thead>
+                            <tr class="">
+                                <th scope="col">
+                                    Nombre
+                                </th>
+                                <th scope="col">
+                                    Id
+                                </th>
+                                <th scope="col">
+                                    Unidad
+                                </th>
+                                <th scope="col">
+                                    Subtotal
+                                </th>
+                                <th scope="col">
+                                    Total
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="lista in ListadoOrdenes" class="hc-1" role="button" @click="IrADetalle(lista)">
+                                <td>
+                                    {{lista.name}}
+                                </td>
+                                <td>
+                                    {{lista.id}}
+                                </td>
+                                <td>
+                                    {{lista.units.weight}}
+                                </td>
+                                <td class="text-end">
+                                    ${{lista.totals.subtotal}}
+                                </td>
+                                <td class="text-end">
+                                    ${{lista.totals.total}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row my-3" v-if="paginaActual == 'Detalle'">
+            <div class="col-md-12">
+                <div class="tituloPage col-md-12 mb-3">
+                    <h2>Detalle de la orden de compra</h2>
+                </div>
+                <div class="divOrden">
+                    <div class="col-md-12 row my-3">
+                        <div class="col-md-6 float-start">
+                            <div class="text-start">
+                                <img class="imgOC" src="./image/iconOC.jpg" alt="" srcset="">
+                            </div>
+                        </div>
+                        <div class="col-md-6 float-end">
+                            <div class="text-end fw-bold fs-4">
+                                <span class="cl-1">Orden compra </span>
+                                <span class="cl-2">{{DetalleOrden.number}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 row my-3">
+                        <div class="col-md-12">
+                            <span class="cl-1 fw-bold">Empresa: </span>
+                            <span class="fw-bold">{{DetalleOrden.billingAddress.company}}</span>
+                        </div>
+                        <div class="col-md-12">
+                            <span class="cl-1 fw-bold">Nombre: </span>
+                            <span class="fw-bold">{{DetalleOrden.billingAddress.firstName}} {{DetalleOrden.billingAddress.lastName}}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <span class="cl-1 fw-bold">Dirección: </span>
+                            <span class="fw-bold">{{DetalleOrden.billingAddress.address1}}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <span class="cl-1 fw-bold">Código postal: </span>
+                            <span class="fw-bold">{{DetalleOrden.billingAddress.postalCode}}</span>
+                        </div>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <span class="cl-1 fw-bold">Ciudad: </span>
+                            <span class="fw-bold">{{DetalleOrden.billingAddress.city}}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <span class="cl-1 fw-bold">Estado: </span>
+                            <span class="fw-bold">{{DetalleOrden.billingAddress.state.name}}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <span class="cl-1 fw-bold">Pais: </span>
+                            <span class="fw-bold">{{DetalleOrden.billingAddress.country.name}}</span>
+                        </div>
+                        <div class="col-md-12">
+                            <span class="cl-1 fw-bold">Referencias: </span>
+                            <span class="fw-bold">{{DetalleOrden.billingAddress.references}}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <span class="cl-1 fw-bold">Correo: </span>
+                            <span class="fw-bold">{{DetalleOrden.billingAddress.email}}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <span class="cl-1 fw-bold">Telefono: </span>
+                            <span class="fw-bold">{{DetalleOrden.billingAddress.phone}}</span>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
+                    <div class="col-md-12 row my-3">
+                        <div class="">
+                            <table class="table table-striped table-bordered border-primary table-responsive">
+                                <thead>
+                                    <tr class="">
+                                        <th scope="col">
+                                            SKU
+                                        </th>
+                                        <th scope="col">
+                                            Nombre
+                                        </th>
+                                        <th scope="col">
+                                            Cantidad
+                                        </th>
+                                        <th scope="col">
+                                            Precio
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="detalleOrden in DetalleOrden.items" class="" >
+                                        <td>
+                                            {{detalleOrden.sku}}
+                                        </td>
+                                        <td>
+                                            {{detalleOrden.name}}
+                                        </td>
+                                        <td>
+                                            {{detalleOrden.quantity}}
+                                        </td>
+                                        <td class="text-end">
+                                            ${{detalleOrden.price}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-12 row my-3">
+                        <div class="col-md-8 float-start"></div>
+                        <div class="col-md-4 float-end">
+                            <div class="divTotales">
+                                <div class="col-md-12">
+                                    <div class="col-md-6 cl-1 fw-bold float-start text-start">Envio: </div>
+                                    <div class="col-md-6 cl-2 fw-bold float-end text-end">${{DetalleOrden.totals.shipping}}</div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="col-md-6 cl-1 fw-bold float-start text-start">Descuento: </div>
+                                    <div class="col-md-6 cl-2 fw-bold float-end text-end">${{DetalleOrden.totals.discount}}</div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="col-md-6 cl-1 fw-bold float-start text-start">Subtotal: </div>
+                                    <div class="col-md-6 cl-2 fw-bold float-end text-end">${{DetalleOrden.totals.subtotal}}</div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="col-md-6 cl-1 fw-bold float-start text-start">Impuesto: </div>
+                                    <div class="col-md-6 cl-2 fw-bold float-end text-end">${{DetalleOrden.totals.tax}}</div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="col-md-6 cl-1 fw-bold float-start text-start">Total: </div>
+                                    <div class="col-md-6 cl-2 fw-bold float-end text-end">${{DetalleOrden.totals.total}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2 float-start mt-3">
+                    <button type="button" class="btn btn-dark col-md-12" @click="Regresar">Regresar</button>
+                </div>
+                <div class="col-md-2 float-start mt-3 ms-1">
+                    <button type="button" class="btn btn-primary col-md-12" @click="Agregar" data-bs-toggle="modal" data-bs-target="#addProd">Agregar</button>
+                </div>
+                <div class="col-md-2 float-end mt-3">
+                    <button type="button" class="btn btn-success col-md-12" @click="Pagar">Pagar</button>
+                </div>
+            </div>
+        </div>
+        <div class="row my-3" v-show="isAlta">
+            <div id="addProd" class="modal fade" tabindex="-1" aria-labelledby="addProdLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addProdLabel">Agregar producto</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="Cancelar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-md-12">
+                                <form>
+                                    <div class="form-group">
+                                        <div id="AlertSKU" class="alert alert-danger d-flex align-items-center p-1" :class="{'visually-hidden': alerts.isSku}" role="alert">
+                                            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+                                                <use xlink:href="#exclamation-triangle-fill" />
+                                            </svg>
+                                            <div>
+                                                El campo "SKU" es obligatorio.
+                                            </div>
+                                        </div>
+                                        <div class="input-group my-2">
+                                            <div class="input-group-prepend w-25">
+                                                <span class="input-group-text">SKU</span>
+                                            </div>
+                                            <input type="text" name="SKU" id="SKU" v-model="formulario.sku" class="form-control rounded-1 ms-1" placeholder="SKU">
+                                        </div>
+                                        <div id="AlertNombre" class="alert alert-danger d-flex align-items-center p-1" :class="{'visually-hidden': alerts.isName}" role="alert">
+                                            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+                                                <use xlink:href="#exclamation-triangle-fill" />
+                                            </svg>
+                                            <div>
+                                                El campo "Nombre" es obligatorio.
+                                            </div>
+                                        </div>
+                                        <div class="input-group my-2">
+                                            <div class="input-group-prepend w-25">
+                                                <span class="input-group-text">Nombre</span>
+                                            </div>
+                                            <input type="text" name="Nombre" id="Nombre" v-model="formulario.name" class="form-control rounded-1 ms-1" placeholder="Nombre">
+                                        </div>
+                                        <div id="AlertCantidad" class="alert alert-danger d-flex align-items-center p-1" :class="{'visually-hidden': alerts.isQuantity}" role="alert">
+                                            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+                                                <use xlink:href="#exclamation-triangle-fill" />
+                                            </svg>
+                                            <div>
+                                                El campo "Cantidad" es obligatorio.
+                                            </div>
+                                        </div>
+                                        <div class="input-group my-2">
+                                            <div class="input-group-prepend w-25">
+                                                <span class="input-group-text">Cantidad</span>
+                                            </div>
+                                            <input type="number" name="Cantidad" id="Cantidad" v-model="formulario.quantity" class="form-control rounded-1 ms-1" placeholder="Cantidad">
+                                        </div>
+                                        <div id="AlertPrecio" class="alert alert-danger d-flex align-items-center p-1" :class="{'visually-hidden': alerts.isPrice}" role="alert">
+                                            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+                                                <use xlink:href="#exclamation-triangle-fill" />
+                                            </svg>
+                                            <div>
+                                                El campo "Precio" es obligatorio.
+                                            </div>
+                                        </div>
+                                        <div class="input-group my-2">
+                                            <div class="input-group-prepend w-25">
+                                                <span class="input-group-text">Precio</span>
+                                            </div>
+                                            <input type="number" name="Precio" id="Precio" v-model="formulario.price" class="form-control rounded-1 ms-1" placeholder="Precio">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger w-25" @click="Cancelar">Cerrar</button>
+                            <button type="button" class="btn btn-success w-25" @click="Aceptar">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+            <path
+                d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+        </symbol>
+    </svg>
+</body>
+
+</html>
